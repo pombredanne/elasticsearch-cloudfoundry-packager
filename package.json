@@ -1,0 +1,22 @@
+{
+  "author": "Hugues <hugues@sutoiku.com> (http://sutoiku.com)",
+  "name": "elasticsearch-cloudfoundry-packager",
+  "description": "Package ElasticSearch For Cloudfoundry",
+  "version": "0.1.0",
+  "repository": {
+    "url": "git://github.com/hmalphettes/elasticsearch-cloudfoundry-packager"
+  },
+  "main": "bin/package_es.js",
+  "dependencies": {
+    "lodash": "~1.2.0",
+    "debug": "~0.7.0",
+    "tar.gz": "*",
+    "rimraf": "*",
+    "parseq": "*",
+    "request": "*"
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": ">=0.8.x"
+  }
+}
