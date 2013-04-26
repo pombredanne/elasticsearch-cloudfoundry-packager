@@ -15,7 +15,8 @@
     "parseq": "*",
     "request": "*",
     "js-yaml": "*",
-    "commander": "*"
+    "commander": "*",
+    "setimmediate": "*"
   },
   "optionalDependencies": {},
   "engines": {
