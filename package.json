@@ -13,7 +13,9 @@
     "tar.gz": "*",
     "rimraf": "*",
     "parseq": "*",
-    "request": "*"
+    "request": "*",
+    "js-yaml": "*",
+    "commander": "*"
   },
   "optionalDependencies": {},
   "engines": {

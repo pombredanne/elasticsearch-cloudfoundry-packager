@@ -30,7 +30,9 @@ function editConfigForCloudfoundry(folder, done) {
   var ymlConf = folder + '/config/elasticsearch.yml';
 
   var defaultEnvVars = '[ -z "$VCAP_APP_PORT" ] && export VCAP_APP_PORT=9200\n' +
-                       '[ -z "$VCAP_APP_HOST" ] && export VCAP_APP_HOST=localhost\n';
+                       '[ -z "$VCAP_APP_HOST" ] && export VCAP_APP_HOST=localhost\n' +
+                       '[ -z "$ES_BASIC_AUTH_USER" ] && export ES_BASIC_AUTH_USER=admin\n' +
+                       '[ -z "$ES_BASIC_AUTH_PASSWORD" ] && export ES_BASIC_AUTH_PASSWORD=admin_pw\n';
   var binReplacements = {
     '# Start up the service': defaultEnvVars + '# Start up the service'
   };
@@ -53,32 +55,36 @@ function editConfigForCloudfoundry(folder, done) {
   });
 }
 
-download(esURL, 'downloads', false, function(err, topFolder) {
-  if (err) {
-    return console.log('There was an error ' + err.message, err.stack);
-  }
-  
-  editConfigForCloudfoundry(topFolder, function(err) {
+function package() {
+  download(esURL, 'downloads', false, function(err, topFolder) {
     if (err) {
       return console.log('There was an error ' + err.message, err.stack);
     }
-
-    installAuthenticationPlugin(topFolder, function(err) {
+    
+    editConfigForCloudfoundry(topFolder, function(err) {
       if (err) {
         return console.log('There was an error ' + err.message, err.stack);
       }
 
-      installOtherPlugins(topFolder, function(err) {
+      installAuthenticationPlugin(topFolder, function(err) {
         if (err) {
           return console.log('There was an error ' + err.message, err.stack);
         }
 
-        console.log('done!');
+        installOtherPlugins(topFolder, function(err) {
+          if (err) {
+            return console.log('There was an error ' + err.message, err.stack);
+          }
+
+          console.log('done!');
+        });
+
       });
 
     });
 
   });
 
-});
+};
 
+package();
