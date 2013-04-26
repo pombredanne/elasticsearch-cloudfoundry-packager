@@ -23,8 +23,8 @@ function installOtherPlugins(folder, done) {
 
 function editConfigForCloudfoundry(folder, done) {
   var configReplacements = {
-    'network.bind_host: ': 'network.bind_host: ${VCAP_APP_HOST}',
-    'network.host: ': 'network.host: ${VCAP_APP_HOST}',
+    //'network.bind_host: ': 'network.bind_host: ${VCAP_APP_HOST}',
+    'network.publish_host: ': 'network.publish_host: ${VCAP_APP_HOST}',
     'http.port: ': 'http.port: ${VCAP_APP_PORT}'
   };
   var ymlConf = folder + '/config/elasticsearch.yml';
