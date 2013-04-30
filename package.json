@@ -15,6 +15,7 @@
     "parseq": "*",
     "request": "*",
     "js-yaml": "*",
+    "ncp": "*",
     "commander": "*",
     "setimmediate": "*"
   },

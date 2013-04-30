@@ -16,13 +16,12 @@ Plugins Installed
 
     `node bin/package-es`
 
-- downloads elasticsearch-0.90.0.RC2
+- downloads elasticsearch-0.90.0.httpheaders: [patched build with support for custom httpheaders] (https://github.com/hmalphettes/elasticsearch) on [bintray] (https://bintray.com/pkg/show/general/hmalphettes/elasticsearch-custom-headers/elasticsearch)
 - changes config/elastic.yml to use the environment VMC_APP_PORT for the port on which to listen to http requests
 - changes bin/elasticsearch and bin/plugin to set VMC_APP_PORT to 9200 by default
-- installs the [paramedic] () plugin
-- installs the [head] () plugin
-- installs a patched elasticsearch that supports custom-http-headers
-- installs a patched [http-basic] () authentication plugin that sends the header 'WWW-Authorize'
+- installs the [paramedic] (https://github.com/karmi/elasticsearch-paramedic) plugin
+- installs the [head] (https://github.com/mobz/elasticsearch-head) plugin
+- installs a patched [http-basic] (https://github.com/hmalphettes/elasticsearch-http-basic) authentication plugin that sends the header 'WWW-Authorize' also deployed on [bintray] (https://bintray.com/pkg/show/general/hmalphettes/elasticsearch-custom-headers/elasticsearch)
 
 Cloudfoundry Deployment
 =======================

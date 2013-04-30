@@ -1,7 +1,9 @@
 require('setimmediate');
 var exec = require('child_process').exec
   , spawn = require('child_process').spawn;
-var fs = require('fs');
+var fs = require('fs')
+  , path = require('path')
+  , ncp = require('ncp').ncp;
 var debug  = require('debug')('package-es');
 
 var download  = require('../lib/download-helper');
@@ -10,7 +12,9 @@ var installPlugin  = require('../lib/install-plugin').installPlugin;
 
 var installAuthenticationPlugin = require('../lib/install-authentication-plugin');
 
-var esURL = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.0.RC2.tar.gz';
+var esURL = 'http://dl.bintray.com/content/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/0.90.0.httpheaders/elasticsearch-0.90.0.httpheaders.tar.gz';
+
+var buildManifest = {};
 
 function installOtherPlugins(folder, done) {
   installPlugin(folder, 'mobz/elasticsearch-head', function(err) {
@@ -60,23 +64,31 @@ function package() {
     if (err) {
       return console.log('There was an error ' + err.message, err.stack);
     }
+    buildManifest.elasticsearch = path.basename(topFolder);
+    buildManifest.url = esURL;
     
     editConfigForCloudfoundry(topFolder, function(err) {
       if (err) {
         return console.log('There was an error ' + err.message, err.stack);
       }
 
-      installAuthenticationPlugin(topFolder, function(err) {
+      installAuthenticationPlugin(topFolder, function(err, authenticationPluginURL) {
         if (err) {
           return console.log('There was an error ' + err.message, err.stack);
         }
+        buildManifest['http-basic'] = {
+          name: path.basename(authenticationPluginURL),
+          url: authenticationPluginURL
+        };
 
         installOtherPlugins(topFolder, function(err) {
           if (err) {
             return console.log('There was an error ' + err.message, err.stack);
           }
-
-          console.log('done!');
+          fs.writeFileSync(topFolder + '/build.json', JSON.stringify(buildManifest, null, 2));
+          ncp(topFolder, 'elasticsearch-latest', function (err) {
+            console.log('done!');
+          });
         });
 
       });
@@ -85,6 +97,6 @@ function package() {
 
   });
 
-};
+}
 
 package();
