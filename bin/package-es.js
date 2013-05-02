@@ -21,7 +21,12 @@ function installOtherPlugins(folder, done) {
     if (err) {
       return done(err);
     }
-    installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
+    installPlugin(folder, 'lukas-vlcek/bigdesk/2.2.0', function(err) {
+      if (err) {
+        return done(err);
+      }
+      installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
+    });
   });
 }
 
