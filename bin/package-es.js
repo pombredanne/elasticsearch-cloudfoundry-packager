@@ -21,7 +21,8 @@ function installOtherPlugins(folder, done) {
     if (err) {
       return done(err);
     }
-    installPlugin(folder, 'lukas-vlcek/bigdesk/2.2.0', function(err) {
+    //use hmalphettes 
+    installPlugin(folder, 'hmalphettes/elasticsearch-bigdesk', function(err) {
       if (err) {
         return done(err);
       }
@@ -35,22 +36,35 @@ function editConfigForCloudfoundry(folder, done) {
     //'network.bind_host: ': 'network.bind_host: ${VCAP_APP_HOST}',
     'network.publish_host: ': 'network.publish_host: ${VCAP_APP_HOST}\n' +
                               '# node does not do keep alive and on CF we have limited number of connections.\n' +
-                              'network.tcp.keep_alive: false',
-    'http.port: ': 'http.port: ${VCAP_APP_PORT}'
+                              'network.tcp.keep_alive: ${ES_NETWORK_TCP_KEEP_ALIVE}',
+    'http.port: ': 'http.port: ${VCAP_APP_PORT}',
+    '# index.number_of_replicas: 1': 'index.number_of_replicas: ${ES_NUMBER_OF_REPLICAS}\n\n' +
+                                     '# Controle the index storage type; use memory on cloudfoundry.com\n' +
+                                     'index.store.type: ${ES_INDEX_STORE_TYPE}',
+    '# cluster.name: ': 'cluster.name: ${ES_CLUSTER_NAME}',
+    'index.number_of_shards: ': 'index.number_of_shards: ${ES_NUMBER_OF_SHARDS}'
   };
   var ymlConf = folder + '/config/elasticsearch.yml';
 
-  var defaultEnvVars = '[ -z "$VCAP_APP_PORT" ] && export VCAP_APP_PORT=9200\n' +
+  var defaultEnvVars = '# Default env variables for cloudfoundry.com\n' +
+                       '[ -z "$VCAP_APP_PORT" ] && export VCAP_APP_PORT=9200\n' +
                        '[ -z "$VCAP_APP_HOST" ] && export VCAP_APP_HOST=localhost\n' +
                        '[ -z "$ES_BASIC_AUTH_USER" ] && export ES_BASIC_AUTH_USER=admin\n' +
-                       '[ -z "$ES_BASIC_AUTH_PASSWORD" ] && export ES_BASIC_AUTH_PASSWORD=admin_pw\n';
+                       '[ -z "$ES_BASIC_AUTH_PASSWORD" ] && export ES_BASIC_AUTH_PASSWORD=admin_pw\n' +
+                       '[ -z "$ES_INDEX_STORE_TYPE" ] && export ES_INDEX_STORE_TYPE=memory\n' +
+                       '[ -z "$ES_HEAP_SIZE" ] && export ES_HEAP_SIZE=192m\n' +
+                       '[ -z "$ES_NETWORK_TCP_KEEP_ALIVE" ] && export ES_NETWORK_TCP_KEEP_ALIVE=false\n' +
+                       '[ -z "$ES_CLUSTER_NAME" ] && export ES_CLUSTER_NAME=elasticsearch\n' +
+                       '[ -z "$ES_NUMBER_OF_REPLICAS" ] && export ES_NUMBER_OF_REPLICAS=0\n' +
+                       '[ -z "$ES_NUMBER_OF_SHARDS" ] && export ES_NUMBER_OF_SHARDS=1\n';
+
   var binReplacements = {
-    '# Start up the service': defaultEnvVars + '# Start up the service'
+    'SCRIPT="$0"': 'SCRIPT="$0"\n\n' + defaultEnvVars
   };
   var binPath = folder + '/bin/elasticsearch';
 
   var pluginReplacements = {
-    '# determine elasticsearch home': defaultEnvVars + '# determine elasticsearch home'
+    'SCRIPT="$0"': 'SCRIPT="$0"\n\n' + defaultEnvVars
   };
   var pluginPath = folder + '/bin/plugin';
   editFile(ymlConf, configReplacements, function(err) {
