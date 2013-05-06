@@ -52,7 +52,7 @@ function editConfigForCloudfoundry(folder, done) {
                        '[ -z "$ES_BASIC_AUTH_USER" ] && export ES_BASIC_AUTH_USER=admin\n' +
                        '[ -z "$ES_BASIC_AUTH_PASSWORD" ] && export ES_BASIC_AUTH_PASSWORD=admin_pw\n' +
                        '[ -z "$ES_INDEX_STORE_TYPE" ] && export ES_INDEX_STORE_TYPE=memory\n' +
-                       '[ -z "$ES_HEAP_SIZE" ] && export ES_HEAP_SIZE=192m\n' +
+                       '[ -z "$ES_HEAP_SIZE" ] && export ES_HEAP_SIZE=768m\n' +
                        '[ -z "$ES_NETWORK_TCP_KEEP_ALIVE" ] && export ES_NETWORK_TCP_KEEP_ALIVE=false\n' +
                        '[ -z "$ES_CLUSTER_NAME" ] && export ES_CLUSTER_NAME=elasticsearch\n' +
                        '[ -z "$ES_NUMBER_OF_REPLICAS" ] && export ES_NUMBER_OF_REPLICAS=0\n' +
