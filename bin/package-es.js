@@ -26,7 +26,9 @@ function installOtherPlugins(folder, done) {
       if (err) {
         return done(err);
       }
-      installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
+      installPlugin(folder, 'de.spinscale/elasticsearch-plugin-suggest/0.90.0-0.6.1', function(err) {
+        installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
+      });
     });
   });
 }
