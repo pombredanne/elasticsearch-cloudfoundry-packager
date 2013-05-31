@@ -12,7 +12,8 @@ var installPlugin  = require('../lib/install-plugin').installPlugin;
 
 var installAuthenticationPlugin = require('../lib/install-authentication-plugin');
 
-var esURL = 'http://dl.bintray.com/content/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/0.90.0.httpheaders/elasticsearch-0.90.0.httpheaders.tar.gz';
+//var esURL = 'http://dl.bintray.com/content/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/0.90.0.httpheaders/elasticsearch-0.90.0.httpheaders.tar.gz';
+var esURL =   'http://dl.bintray.com/content/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/0.90.2.pre/elasticsearch-0.90.2.pre.tar.gz';
 
 var buildManifest = {};
 
@@ -21,14 +22,13 @@ function installOtherPlugins(folder, done) {
     if (err) {
       return done(err);
     }
-    //use hmalphettes 
-    installPlugin(folder, 'hmalphettes/elasticsearch-bigdesk', function(err) {
+    installPlugin(folder, 'lukas-vlcek/elasticsearch-bigdesk', function(err) {
       if (err) {
         return done(err);
       }
-      installPlugin(folder, 'de.spinscale/elasticsearch-plugin-suggest/0.90.0-0.6.1', function(err) {
+      //installPlugin(folder, 'de.spinscale/elasticsearch-plugin-suggest/0.90.1-0.7', function(err) {
         installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
-      });
+      //});
     });
   });
 }
