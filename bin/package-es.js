@@ -26,7 +26,8 @@ function installOtherPlugins(folder, done) {
         return done(err);
       }
       installPlugin(folder, 'bin/plugin -install elasticsearch/elasticsearch-lang-javascript/1.3.0', function(err) {
-        installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
+        //installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
+        installPlugin(folder, 'elasticsearch/elasticsearch-cloud-aws/1.12.0', done);
       });
     });
   });
