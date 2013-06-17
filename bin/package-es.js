@@ -13,7 +13,7 @@ var installPlugin  = require('../lib/install-plugin').installPlugin;
 var installAuthenticationPlugin = require('../lib/install-authentication-plugin');
 var installAWSPlugin = require('../lib/install-aws-plugin');
 
-var esURL =   'http://dl.bintray.com/content/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/0.90.2.pre/elasticsearch-0.90.2.pre.tar.gz';
+var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/1.0.0.Beta1-20130616/elasticsearch-1.0.0.Beta1-20130616.tar.gz';
 
 var buildManifest = {};
 
@@ -27,8 +27,7 @@ function installOtherPlugins(folder, done) {
         return done(err);
       }
       installPlugin(folder, 'bin/plugin -install elasticsearch/elasticsearch-lang-javascript/1.3.0', function(err) {
-        //installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
-        installPlugin(folder, 'elasticsearch/elasticsearch-cloud-aws/1.12.0', done);
+        installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
       });
     });
   });
