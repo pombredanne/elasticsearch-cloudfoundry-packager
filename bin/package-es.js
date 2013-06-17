@@ -11,6 +11,7 @@ var editFile  = require('../lib/edit-config-file');
 var installPlugin  = require('../lib/install-plugin').installPlugin;
 
 var installAuthenticationPlugin = require('../lib/install-authentication-plugin');
+var installAWSPlugin = require('../lib/install-aws-plugin');
 
 var esURL =   'http://dl.bintray.com/content/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/0.90.2.pre/elasticsearch-0.90.2.pre.tar.gz';
 
@@ -53,8 +54,21 @@ function editConfigForCloudfoundry(folder, done) {
                        '[ -z "$VCAP_APP_HOST" ] && export VCAP_APP_HOST=localhost\n' +
                        '[ -z "$ES_BASIC_AUTH_USER" ] && export ES_BASIC_AUTH_USER=admin\n' +
                        '[ -z "$ES_BASIC_AUTH_PASSWORD" ] && export ES_BASIC_AUTH_PASSWORD=admin_pw\n' +
-                       '[ -z "$ES_INDEX_STORE_TYPE" ] && export ES_INDEX_STORE_TYPE=memory\n' +
-                       '[ -z "$ES_HEAP_SIZE" ] && export ES_HEAP_SIZE=768m\n' +
+
+                       'if [ -z "$VMC_APP_INSTANCE"]; then\n' +
+                       '  [ -z "$ES_INDEX_STORE_TYPE" ] && export ES_INDEX_STORE_TYPE=niofs\n' +
+                       '  [ -z "$ES_HEAP_SIZE" ] && export ES_HEAP_SIZE=384m\n' +
+                       'else # old cloudfoundry.com\n' +
+                       '  [ -z "$ES_INDEX_STORE_TYPE" ] && export ES_INDEX_STORE_TYPE=memory\n' +
+                       '  [ -z "$ES_HEAP_SIZE" ] && export ES_HEAP_SIZE=1024m\n' +
+                       'fi\n' +
+
+                       '[ -z "$GATEWAY_TYPE" ] && export GATEWAY_TYPE=""\n' +
+                       '[ -z "$AWS_REGION" ] && export AWS_REGION=us-east-1\n' +
+                       '[ -z "$AWS_ACCESS_KEY" ] && export AWS_ACCESS_KEY=""\n' +
+                       '[ -z "$AWS_SECRET_KEY" ] && export AWS_SECRET_KEY=""\n' +
+                       '[ -z "$AWS_S3_BUCKET" ] && export AWS_S3_BUCKET=""\n' +
+
                        '[ -z "$ES_NETWORK_TCP_KEEP_ALIVE" ] && export ES_NETWORK_TCP_KEEP_ALIVE=false\n' +
                        '[ -z "$ES_CLUSTER_NAME" ] && export ES_CLUSTER_NAME=elasticsearch\n' +
                        '[ -z "$ES_NUMBER_OF_REPLICAS" ] && export ES_NUMBER_OF_REPLICAS=0\n' +
@@ -104,13 +118,18 @@ function package() {
           url: authenticationPluginURL
         };
 
-        installOtherPlugins(topFolder, function(err) {
+        installAWSPlugin(topFolder, function(err) {
           if (err) {
             return console.log('There was an error ' + err.message, err.stack);
           }
-          fs.writeFileSync(topFolder + '/build.json', JSON.stringify(buildManifest, null, 2));
-          ncp(topFolder, 'elasticsearch-latest', function (err) {
-            console.log('done!');
+          installOtherPlugins(topFolder, function(err) {
+            if (err) {
+              return console.log('There was an error ' + err.message, err.stack);
+            }
+            fs.writeFileSync(topFolder + '/build.json', JSON.stringify(buildManifest, null, 2));
+            ncp(topFolder, 'elasticsearch-latest', function (err) {
+              console.log('done!');
+            });
           });
         });
 
