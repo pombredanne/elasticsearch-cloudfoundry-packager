@@ -38,8 +38,8 @@ The name of the application is 'myelasticsearch'
 The memory allocated to it is 512M
 The http basic auth login is 'admin:admin_pw'.
 
-Cloudfoundry.com Constraints
-============================
+Obsolete: Cloudfoundry.com - Version-1 Constraints
+========================================
 ## `index.storage.type: 'memory'`
 Cloudfoundry.com does not provide an env with a lot of opened file descriptors.
 This leaves us only the 'memory' type of storage for the indices.
@@ -51,9 +51,36 @@ Switching off keep-alive when running out of file opened descriptors got rid of 
 TODO: Try with keep alive enabled again as we were working on too many fronts at the same time.
 
 ## Replicas and Shards
-Given the in-memory storage and the lack of discoverability:
-- No Replica.
-- Single shard.
+All in memory: so  we use a single shard and a no replica.
+
+Cloudfoundry V2 constraints
+===========================
+Cloudfoundry V2 has a single constraint: no support for clustering.
+This is because each app runs in a container where a single http port is opened.
+
+We would need to develop a Discovery plugin for ES that can have its communication go through http on the same port than the queries.
+
+Durability
+==========
+
+Setup the Shared Gateway S3 plugin.
+The S3 Gateway will periodically send the indexes and cluster state into an S3 bucket.
+
+Recipe: cloning the data from a S3 to a local instance and back.
+----------------------------------------------------------------
+
+At Stoic we are currently using Elasticsearch as our primary datastore.
+It is either amazing or good enough for what we do for the rest.
+
+In the area of good-enough; here is how we tackle durability:
+- Download the content of the backup: ${bucket-name}/${elasticsearch-cluster-name}. I use [3hubapp](http://3hubapp.com) for UI to do that as Cyberduck did not work for me.
+- Copy this folder into elasticsearch/works/${elasticsearch-cluster-name}
+- Start Elasticsearch with the same clustername and with the Shared Filesystem Gateway.
+
+    ES_CLUSTER_NAME=${elasticsearch-cluster-name} GATEWAY_TYPE=fs ./bin/elasticsearch -f
+
+Enjoy debugging on your local machine.
+When you want to switch back to the data you had before, restart Elasticsearch without defining the clustername and the gateway type.
 
 Requirements
 ============

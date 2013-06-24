@@ -67,6 +67,7 @@ function editConfigForCloudfoundry(folder, done) {
                        '[ -z "$AWS_ACCESS_KEY" ] && export AWS_ACCESS_KEY=""\n' +
                        '[ -z "$AWS_SECRET_KEY" ] && export AWS_SECRET_KEY=""\n' +
                        '[ -z "$AWS_S3_BUCKET" ] && export AWS_S3_BUCKET=""\n' +
+                       '[ -z "$GATEWAY_FS_LOCATION" ] && export GATEWAY_FS_LOCATION="work"\n' +
 
                        '[ -z "$ES_NETWORK_TCP_KEEP_ALIVE" ] && export ES_NETWORK_TCP_KEEP_ALIVE=false\n' +
                        '[ -z "$ES_CLUSTER_NAME" ] && export ES_CLUSTER_NAME=elasticsearch\n' +
