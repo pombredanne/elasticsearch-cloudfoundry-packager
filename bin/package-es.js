@@ -47,7 +47,7 @@ function editConfigForCloudfoundry(folder, done) {
     'index.number_of_shards: ': 'index.number_of_shards: ${ES_NUMBER_OF_SHARDS}',
     '# discovery.zen.ping.multicast.enabled: ': 'discovery.zen.ping.multicast.enabled: false',
     '# discovery.zen.ping.unicast.hosts:': 'discovery.zen.ping.unicast.hosts: []',
-    '# bootstrap.mlockall: true': 'bootstrap.mlockall: true'
+    '# bootstrap.mlockall: true': 'bootstrap.mlockall: ${BOOTSTRAP_MLOCKALL}'
 
   };
   var ymlConf = folder + '/config/elasticsearch.yml';
@@ -57,6 +57,8 @@ function editConfigForCloudfoundry(folder, done) {
                        '[ -z "$VCAP_APP_HOST" ] && export VCAP_APP_HOST=localhost\n' +
                        '[ -z "$ES_BASIC_AUTH_USER" ] && export ES_BASIC_AUTH_USER=admin\n' +
                        '[ -z "$ES_BASIC_AUTH_PASSWORD" ] && export ES_BASIC_AUTH_PASSWORD=admin_pw\n' +
+                       '\n' +
+                       '[ -z "$BOOTSTRAP_MLOCKALL" ] && export BOOTSTRAP_MLOCKALL=false\n' +
 
                        'if [ -z "$VMC_APP_INSTANCE"]; then\n' +
                        '  [ -z "$ES_INDEX_STORE_TYPE" ] && export ES_INDEX_STORE_TYPE=niofs\n' +
@@ -76,7 +78,7 @@ function editConfigForCloudfoundry(folder, done) {
                        '[ -z "$ES_NETWORK_TCP_KEEP_ALIVE" ] && export ES_NETWORK_TCP_KEEP_ALIVE=false\n' +
                        '[ -z "$ES_CLUSTER_NAME" ] && export ES_CLUSTER_NAME=elasticsearch\n' +
                        '[ -z "$ES_NUMBER_OF_REPLICAS" ] && export ES_NUMBER_OF_REPLICAS=0\n' +
-                       '[ -z "$ES_NUMBER_OF_SHARDS" ] && export ES_NUMBER_OF_SHARDS=1\n';
+                       '[ -z "$ES_NUMBER_OF_SHARDS" ] && export ES_NUMBER_OF_SHARDS=5\n';
 
   var binReplacements = {
     'SCRIPT="$0"': 'SCRIPT="$0"\n\n' + defaultEnvVars
@@ -84,6 +86,10 @@ function editConfigForCloudfoundry(folder, done) {
   var binPath = folder + '/bin/elasticsearch';
 
   var binIncReplacements = {
+    'JAVA_OPTS="$JAVA_OPTS -Xss256k"': 'JAVA_OPTS="$JAVA_OPTS -Xss256k"\n' +
+                                       '\n' +
+                                       '#Passs the tmp dir on Cloudfoundry to the JVM\n' +
+                                       '[ -n "$TMPDIR" ] && JAVA_OPTS="$JAVA_OPTS -Djava.io.tmpdir=$TMPDIR"',
     //JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
     'HeapDumpOnOutOfMemoryError': '[ -n "$ES_DO_HEAP_DUMP_ON_OOM" ] && JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"'
   };
