@@ -13,7 +13,7 @@ var installPlugin  = require('../lib/install-plugin').installPlugin;
 var installAuthenticationPlugin = require('../lib/install-authentication-plugin');
 var installAWSPlugin = require('../lib/install-aws-plugin');
 
-var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/1.0.0.Beta1-20130616/elasticsearch-1.0.0.Beta1-20130616.tar.gz';
+var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/1.0.0.Beta1-20130626/elasticsearch-1.0.0.Beta1-20130626.tar.gz';
 
 var buildManifest = {};
 
@@ -44,7 +44,11 @@ function editConfigForCloudfoundry(folder, done) {
                                      '# Controle the index storage type; use memory on cloudfoundry.com\n' +
                                      'index.store.type: ${ES_INDEX_STORE_TYPE}',
     '# cluster.name: ': 'cluster.name: ${ES_CLUSTER_NAME}',
-    'index.number_of_shards: ': 'index.number_of_shards: ${ES_NUMBER_OF_SHARDS}'
+    'index.number_of_shards: ': 'index.number_of_shards: ${ES_NUMBER_OF_SHARDS}',
+    '# discovery.zen.ping.multicast.enabled: ': 'discovery.zen.ping.multicast.enabled: false',
+    '# discovery.zen.ping.unicast.hosts:': 'discovery.zen.ping.unicast.hosts: []',
+    '# bootstrap.mlockall: true': 'bootstrap.mlockall: true'
+
   };
   var ymlConf = folder + '/config/elasticsearch.yml';
 
@@ -79,6 +83,12 @@ function editConfigForCloudfoundry(folder, done) {
   };
   var binPath = folder + '/bin/elasticsearch';
 
+  var binIncReplacements = {
+    //JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
+    'HeapDumpOnOutOfMemoryError': '[ -n "$ES_DO_HEAP_DUMP_ON_OOM" ] && JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"'
+  };
+  var binIncPath = folder + '/bin/elasticsearch.in.sh';
+
   var pluginReplacements = {
     'SCRIPT="$0"': 'SCRIPT="$0"\n\n' + defaultEnvVars
   };
@@ -91,7 +101,12 @@ function editConfigForCloudfoundry(folder, done) {
       if (err) {
         return done(err);
       }
-      editFile(pluginPath, pluginReplacements, done);
+      editFile(binIncPath, binIncReplacements, function(err) {
+        if (err) {
+          return done(err);
+        }
+        editFile(pluginPath, pluginReplacements, done);
+      });
     });
   });
 }
