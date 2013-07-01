@@ -13,7 +13,7 @@ var installPlugin  = require('../lib/install-plugin').installPlugin;
 var installAuthenticationPlugin = require('../lib/install-authentication-plugin');
 var installAWSPlugin = require('../lib/install-aws-plugin');
 
-var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/1.0.0.Beta1-20130616/elasticsearch-1.0.0.Beta1-20130616.tar.gz';
+var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/1.0.0.Beta1-20130701/elasticsearch-1.0.0.Beta1-20130701.tar.gz';
 
 var buildManifest = {};
 
@@ -42,7 +42,9 @@ function editConfigForCloudfoundry(folder, done) {
     'http.port: ': 'http.port: ${VCAP_APP_PORT}',
     '# index.number_of_replicas: 1': 'index.number_of_replicas: ${ES_NUMBER_OF_REPLICAS}\n\n' +
                                      '# Controle the index storage type; use memory on cloudfoundry.com\n' +
-                                     'index.store.type: ${ES_INDEX_STORE_TYPE}',
+                                     'index.store.type: ${ES_INDEX_STORE_TYPE}\n' +
+                                     '# when true uses less file handles but less performance. by default false.\n' +
+                                     'index.compound_format: ${ES_COMPOUND_FORMAT}',
     '# cluster.name: ': 'cluster.name: ${ES_CLUSTER_NAME}',
     'index.number_of_shards: ': 'index.number_of_shards: ${ES_NUMBER_OF_SHARDS}',
     '# discovery.zen.ping.multicast.enabled: ': 'discovery.zen.ping.multicast.enabled: false',
@@ -78,7 +80,8 @@ function editConfigForCloudfoundry(folder, done) {
                        '[ -z "$ES_NETWORK_TCP_KEEP_ALIVE" ] && export ES_NETWORK_TCP_KEEP_ALIVE=false\n' +
                        '[ -z "$ES_CLUSTER_NAME" ] && export ES_CLUSTER_NAME=elasticsearch\n' +
                        '[ -z "$ES_NUMBER_OF_REPLICAS" ] && export ES_NUMBER_OF_REPLICAS=0\n' +
-                       '[ -z "$ES_NUMBER_OF_SHARDS" ] && export ES_NUMBER_OF_SHARDS=5\n';
+                       '[ -z "$ES_NUMBER_OF_SHARDS" ] && export ES_NUMBER_OF_SHARDS=2\n' +
+                       '[ -z "$ES_COMPOUND_FORMAT" ] && export ES_COMPOUND_FORMAT=true\n';
 
   var binReplacements = {
     'SCRIPT="$0"': 'SCRIPT="$0"\n\n' + defaultEnvVars
