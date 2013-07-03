@@ -1,17 +1,23 @@
 #
 # DOWNLOAD AND SEED YOUR ELASTICSEARCH STORE
 #
-if [ "x$ES_RESEED_DATA" != "x" ] && [ $ES_RESEED_DATA = "YES" ]; then
+if [ ! -d data/$ES_CLUSTER_NAME ] && [ $ES_SEED_ARCHIVE_URL ]; then
+    ARCHIVE_NAME="seed-data.tgz"
     echo "About to reseed all elasticsearch tenants"
-    if [ "x$ES_SEED_FILE" != "x" ]; then
-        wget http://es-seed-data.s3.amazonaws.com/$ES_SEED_FILE
-	    rm -rf orig-data
-	    mv data orig-data || exit
-        echo "Extracting $ES_SEED_FILE in the data directory"
-        tar xvf $ES_SEED_FILE
-        echo "$ES_SEED_FILE has been extracted. "
-        rm $ES_SEED_FILE
-    else
-        echo "You need to specify the ES_SEED_FILE env variable to point to the seed file, which must reside in the s3://es-seed-data bucket"
+    wget $ES_SEED_ARCHIVE_URL -O $ES_HOME/$ARCHIVE_NAME
+    if [ -d "$ES_HOME/orig-data" ]; then
+        rm -rf $ES_HOME/orig-data
     fi
+
+    if [ -d "$ES_HOME/data" ]; then
+        mv $ES_HOME/data $ES_HOME/orig-data
+    fi
+    echo "Extracting $ES_SEED_ARCHIVE_URL in the data directory"
+    tar xvf $ES_HOME/$ARCHIVE_NAME -C $ES_HOME
+    echo "Renaming cluster to $ES_CLUSTER_NAME"
+    if [ ! -d data/$ES_CLUSTER_NAME ]; then
+        mv $ES_HOME/data/elasticsearch $ES_HOME/data/$ES_CLUSTER_NAME
+    fi
+    echo "$ES_SEED_ARCHIVE_URL has been extracted. "
+    rm $ES_HOME/$ARCHIVE_NAME
 fi

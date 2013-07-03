@@ -20,19 +20,26 @@ var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/
 var buildManifest = {};
 
 function installOtherPlugins(folder, done) {
-  installPlugin(folder, 'mobz/elasticsearch-head', function(err) {
-    if (err) {
-      return done(err);
+  async.series([
+    function(done) {
+      installPlugin(folder, 'mobz/elasticsearch-head', done);
+    },
+    function(done) {
+      installPlugin(folder, 'lukas-vlcek/elasticsearch-bigdesk', done);
+    },
+    function(done) {
+      installPlugin(folder, 'bin/plugin -install elasticsearch/elasticsearch-lang-javascript/1.3.0', done);
+    },
+    function(done) {
+      installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
+    },
+    function(done) {
+      installPlugin(folder, 'jprante/elasticsearch-knapsack', done);
+    }],
+    function(err)  {
+      done(err);
     }
-    installPlugin(folder, 'lukas-vlcek/elasticsearch-bigdesk', function(err) {
-      if (err) {
-        return done(err);
-      }
-      installPlugin(folder, 'bin/plugin -install elasticsearch/elasticsearch-lang-javascript/1.3.0', function(err) {
-        installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
-      });
-    });
-  });
+  )
 }
 
 function editConfigForCloudfoundry(folder, done) {
@@ -121,8 +128,8 @@ function editConfigForCloudfoundry(folder, done) {
     },
     function(done) {
       editFile(pluginPath, pluginReplacements, done);
-    }
-  ], function(err) {
+    }],
+    function(err) {
       done(err);
     }
   );

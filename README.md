@@ -85,6 +85,7 @@ If you want to uploiad the data back to S3, simply copy paste the content of the
 
 When you want to switch back to the data you had before, restart Elasticsearch without defining the clustername and the gateway type.
 
+
 Requirements
 ============
 nodejs: runs the script
