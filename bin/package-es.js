@@ -34,7 +34,7 @@ function installOtherPlugins(folder, done) {
       installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
     },
     function(done) {
-      installPlugin(folder, 'jprante/elasticsearch-knapsack', done);
+      installPlugin(folder, './bin/plugin -url http://dl.bintray.com/jprante/elasticsearch-plugins/org/xbib/elasticsearch/plugin/elasticsearch-knapsack/2.0.0/elasticsearch-knapsack-2.0.0.zip -install knapsack', done);
     }],
     function(err)  {
       done(err);
