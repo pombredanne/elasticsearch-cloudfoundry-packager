@@ -5,9 +5,11 @@ var fs = require('fs')
   , path = require('path')
   , ncp = require('ncp').ncp;
 var debug  = require('debug')('package-es');
+var async = require('async');
 
 var download  = require('../lib/download-helper');
-var editFile  = require('../lib/edit-config-file');
+var editFile  = require('../lib/edit-config-file').editFile;
+var appendFile  = require('../lib/edit-config-file').appendFile;
 var installPlugin  = require('../lib/install-plugin').installPlugin;
 
 var installAuthenticationPlugin = require('../lib/install-authentication-plugin');
@@ -102,22 +104,28 @@ function editConfigForCloudfoundry(folder, done) {
     'SCRIPT="$0"': 'SCRIPT="$0"\n\n' + defaultEnvVars
   };
   var pluginPath = folder + '/bin/plugin';
-  editFile(ymlConf, configReplacements, function(err) {
-    if (err) {
-      return done(err);
+  var seedTenantData = path.join(__dirname, '../etc/seed-tenant-data.sh');
+
+  async.series([
+    function(done) {
+      editFile(ymlConf, configReplacements, done);
+    },
+    function(done) {
+      editFile(binPath, binReplacements, done);
+    },
+    function(done) {
+      editFile(binIncPath, binIncReplacements, done);
+    },
+    function(done) {
+      appendFile(binIncPath, seedTenantData, done);
+    },
+    function(done) {
+      editFile(pluginPath, pluginReplacements, done);
     }
-    editFile(binPath, binReplacements, function(err) {
-      if (err) {
-        return done(err);
-      }
-      editFile(binIncPath, binIncReplacements, function(err) {
-        if (err) {
-          return done(err);
-        }
-        editFile(pluginPath, pluginReplacements, done);
-      });
-    });
-  });
+  ], function(err) {
+      done(err);
+    }
+  );
 }
 
 function package() {

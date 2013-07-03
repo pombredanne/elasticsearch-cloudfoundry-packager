@@ -17,7 +17,8 @@
     "js-yaml": "*",
     "ncp": "*",
     "commander": "*",
-    "setimmediate": "*"
+    "setimmediate": "*",
+    "async": "~0.2.9"
   },
   "optionalDependencies": {},
   "engines": {
