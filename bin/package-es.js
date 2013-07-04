@@ -15,7 +15,7 @@ var installPlugin  = require('../lib/install-plugin').installPlugin;
 var installAuthenticationPlugin = require('../lib/install-authentication-plugin');
 var installAWSPlugin = require('../lib/install-aws-plugin');
 
-var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/1.0.0.Beta1-20130701/elasticsearch-1.0.0.Beta1-20130701.tar.gz';
+var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/1.0.0.Beta1-20130704/elasticsearch-1.0.0.Beta1-20130704.tar.gz';
 
 var buildManifest = {};
 
@@ -25,7 +25,7 @@ function installOtherPlugins(folder, done) {
       installPlugin(folder, 'mobz/elasticsearch-head', done);
     },
     function(done) {
-      installPlugin(folder, 'lukas-vlcek/elasticsearch-bigdesk', done);
+      installPlugin(folder, 'lukas-vlcek/bigdesk', done);
     },
     function(done) {
       installPlugin(folder, 'bin/plugin -install elasticsearch/elasticsearch-lang-javascript/1.3.0', done);
