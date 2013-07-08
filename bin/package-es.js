@@ -1,4 +1,3 @@
-require('setimmediate');
 var exec = require('child_process').exec
   , spawn = require('child_process').spawn;
 var fs = require('fs')
@@ -15,7 +14,7 @@ var installPlugin  = require('../lib/install-plugin').installPlugin;
 var installAuthenticationPlugin = require('../lib/install-authentication-plugin');
 var installAWSPlugin = require('../lib/install-aws-plugin');
 
-var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/1.0.0.Beta1-20130704/elasticsearch-1.0.0.Beta1-20130704.tar.gz';
+var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/1.0.0.Beta1-20130708/elasticsearch-1.0.0.Beta1-20130708.tar.gz';
 
 var buildManifest = {};
 

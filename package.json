@@ -17,11 +17,10 @@
     "js-yaml": "*",
     "ncp": "*",
     "commander": "*",
-    "setimmediate": "*",
     "async": "~0.2.9"
   },
   "optionalDependencies": {},
   "engines": {
-    "node": ">=0.8.x"
+    "node": ">=0.10.x"
   }
 }
