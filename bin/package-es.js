@@ -14,7 +14,7 @@ var installPlugin  = require('../lib/install-plugin').installPlugin;
 var installAuthenticationPlugin = require('../lib/install-authentication-plugin');
 var installAWSPlugin = require('../lib/install-aws-plugin');
 
-var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/1.0.0.Beta1-20130708/elasticsearch-1.0.0.Beta1-20130708.tar.gz';
+var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/1.0.0.Beta1-20130722/elasticsearch-1.0.0.Beta1-20130722.tar.gz';
 
 var buildManifest = {};
 
@@ -33,12 +33,12 @@ function installOtherPlugins(folder, done) {
       installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
     },
     function(done) {
-      installPlugin(folder, './bin/plugin -url http://dl.bintray.com/jprante/elasticsearch-plugins/org/xbib/elasticsearch/plugin/elasticsearch-knapsack/2.0.0/elasticsearch-knapsack-2.0.0.zip -install knapsack', done);
-    }],
-    function(err)  {
-      done(err);
+   // installPlugin(folder, './bin/plugin -url http://dl.bintray.com/jprante/elasticsearch-plugins/org/xbib/elasticsearch/plugin/elasticsearch-knapsack/2.0.0/elasticsearch-knapsack-2.0.0.zip -install knapsack', done);
+      installPlugin(folder, './bin/plugin -url http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/xbib/elasticsearch/plugin/elasticsearch-knapsack/2.0.0.s/elasticsearch-knapsack-2.0.0.s.zip -install knapsack', done);
     }
-  )
+  ], function(err)  {
+    done(err);
+  });
 }
 
 function editConfigForCloudfoundry(folder, done) {
@@ -141,7 +141,7 @@ function package() {
     }
     buildManifest.elasticsearch = path.basename(topFolder);
     buildManifest.url = esURL;
-    
+
     editConfigForCloudfoundry(topFolder, function(err) {
       if (err) {
         return console.log('There was an error ' + err.message, err.stack);
