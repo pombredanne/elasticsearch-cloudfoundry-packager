@@ -14,7 +14,9 @@ var installPlugin  = require('../lib/install-plugin').installPlugin;
 var installAuthenticationPlugin = require('../lib/install-authentication-plugin');
 var installAWSPlugin = require('../lib/install-aws-plugin');
 
-var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/1.0.0.Beta1-20130820/elasticsearch-1.0.0.Beta1-20130820.tar.gz';
+//var esVersion = '1.0.0.Beta1-20130822';
+//var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/' + esVersion + '/elasticsearch-' + esVersion + '.tar.gz';
+var esURL = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.3.tar.gz';
 
 var buildManifest = {};
 
@@ -27,14 +29,14 @@ function installOtherPlugins(folder, done) {
       installPlugin(folder, 'lukas-vlcek/bigdesk', done);
     },
     function(done) {
-      installPlugin(folder, 'bin/plugin -install elasticsearch/elasticsearch-lang-javascript/1.3.0', done);
+      installPlugin(folder, 'bin/plugin -install elasticsearch/elasticsearch-lang-javascript/1.4.0', done);
     },
     function(done) {
       installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
     },
     function(done) {
    // installPlugin(folder, './bin/plugin -url http://dl.bintray.com/jprante/elasticsearch-plugins/org/xbib/elasticsearch/plugin/elasticsearch-knapsack/2.0.0/elasticsearch-knapsack-2.0.0.zip -install knapsack', done);
-      installPlugin(folder, './bin/plugin -url http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/xbib/elasticsearch/plugin/elasticsearch-knapsack/2.0.0.s/elasticsearch-knapsack-2.0.0.s.zip -install knapsack', done);
+      installPlugin(folder, './bin/plugin -url http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/xbib/elasticsearch/plugin/elasticsearch-knapsack/2.0.0.1s/elasticsearch-knapsack-2.0.0.1s.zip -install knapsack', done);
     }
   ], function(err)  {
     done(err);
