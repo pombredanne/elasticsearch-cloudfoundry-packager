@@ -14,7 +14,7 @@ var installPlugin  = require('../lib/install-plugin').installPlugin;
 var installAuthenticationPlugin = require('../lib/install-authentication-plugin');
 var installAWSPlugin = require('../lib/install-aws-plugin');
 
-//var esVersion = '1.0.0.Beta1-20130822';
+//var esVersion = '1.0.0.Beta1-20130912';
 //var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/' + esVersion + '/elasticsearch-' + esVersion + '.tar.gz';
 var esURL = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.3.tar.gz';
 
@@ -33,6 +33,9 @@ function installOtherPlugins(folder, done) {
     },
     function(done) {
       installPlugin(folder, 'karmi/elasticsearch-paramedic', done);
+    },
+     function(done) {
+      installPlugin(folder, 'lmenezes/elasticsearch-kopf', done);
     },
     function(done) {
    // installPlugin(folder, './bin/plugin -url http://dl.bintray.com/jprante/elasticsearch-plugins/org/xbib/elasticsearch/plugin/elasticsearch-knapsack/2.0.0/elasticsearch-knapsack-2.0.0.zip -install knapsack', done);
