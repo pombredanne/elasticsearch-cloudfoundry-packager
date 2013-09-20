@@ -16,7 +16,7 @@ var installAWSPlugin = require('../lib/install-aws-plugin');
 
 //var esVersion = '1.0.0.Beta1-20130912';
 //var esURL = 'http://dl.bintray.com/hmalphettes/elasticsearch-custom-headers/org/elasticsearch/elasticsearch/' + esVersion + '/elasticsearch-' + esVersion + '.tar.gz';
-var esURL = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.3.tar.gz';
+var esURL = 'https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-0.90.5.tar.gz';
 
 var buildManifest = {};
 
